@@ -2,18 +2,16 @@
 ##项目概述：
 通过项目给的数据，建立数据ETL管道和机器学习管道，对事件进行分类。
 ##数据来源：
-Figure 8 messages,categories数据集
+messages,categories数据集
 ##项目结构：
 ###1.ETL 管道
 在 Python 脚本 process_data.py 中，编写一个数据清洗管道，实现：
-
 加载 messages 和 categories 数据集
 将两个数据集进行合并 (merge)
 清洗数据
 将其存储到 SQLite 数据库中
 ###2.机器学习管道
 在 Python 脚本 train_classifier.py 中编写机器学习管道，实现：
-
 从 SQLite 数据库中加载数据
 将数据集分成训练和测试集
 搭建文本处理和机器学习管道
