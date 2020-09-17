@@ -1,14 +1,14 @@
 import json
 import plotly
 import pandas as pd
+import joblib as joblib
 
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
 import sqlalchemy
 from sqlalchemy import create_engine
 
@@ -44,12 +44,16 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    # Number of Messages per Category
+    Message_counts = df.drop(['id','message','original','genre', 'related'], axis=1).sum().sort_values()
+    Message_names = list(Message_counts.index)    
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
+
     graphs = [
         {
-            'data': [
-                Bar(
+            'data': [Bar(
                     x=genre_names,
                     y=genre_counts
                 )
@@ -64,7 +68,28 @@ def index():
                     'title': "Genre"
                 }
             }
-        }
+        },
+        {
+            'data': [
+                Bar(
+                    x=Message_counts,
+                    y=Message_names,
+                    orientation = 'h',
+                    
+                
+                )
+            ],
+           
+            'layout': {
+                'title': 'Number of Messages per Category',
+                
+                'xaxis': {
+                    'title': "Number of Messages"
+                    
+                },
+            }
+        }     
+
     ]
     
     # encode plotly graphs in JSON

@@ -86,31 +86,24 @@ def build_model():
     return cv
 
 
-def evaluate_model(model, X_test, y_test, category_names):
-    '''
-    function: 模型验证
-    args: 
-        model - scikit ML Pipeline 
-        X_test - test features
-        y_test - test labels
-        category_names - label names
-    
-    return:
-        scores - f1 scores
-    '''
+def evaluate_model(model, X_test, Y_test, category_names):
+    """Prints multi-output classification results
+    Args:
+        model (pandas dataframe): the scikit-learn fitted model
+        X_text (pandas dataframe): The X test set
+        Y_test (pandas dataframe): the Y test classifications
+        category_names (list): the category names
+    Returns:
+        None
+    """
     y_pred = model.predict(X_test)
-    scores = pd.DataFrame(data=None, index=category_names, columns =['accuracy','precision','recall','F1','True_cnt','False_cnt'],dtype='float')
-    test_cnt = y_test.shape[0]
-    for i in range(y_pred.shape[1]):
-        col_pred = y_pred[:,i]
-        col_true = np.array(y_test, ndmin=2)[:,i]
-        scores['accuracy'].iloc[i] = accuracy_score(col_true,col_pred)
-        scores['precision'].iloc[i] = precision_score(col_true, col_pred,average='micro')
-        scores['recall'].iloc[i] = recall_score(col_true, col_pred,average='micro')
-        scores['F1'].iloc[i] = f1_score(col_true, col_pred,average='micro')
-        scores['True_cnt'].iloc[i] = np.sum(col_true)
-        scores['False_cnt'].iloc[i] = test_cnt-np.sum(col_true)
-    return scores
+
+    for i, col  in enumerate(category_names):
+        ytrue = Y_test[col]
+        ypred = y_pred[:,i]
+        print(col)
+        print(classification_report(ytrue, ypred))        
+        print('-' * 60)    
 
 
 def save_model(model, model_filepath):
